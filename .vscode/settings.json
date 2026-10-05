@@ -1,0 +1,37 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.tabSize": 2,
+  "cSpell.words": ["Adamantite", "changesets"],
+  "[css]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[graphql]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.oxc": "explicit"
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "oxc.typeAware": true
+}

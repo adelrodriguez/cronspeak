@@ -1,0 +1,70 @@
+{
+  "name": "cronspeak",
+  "version": "0.0.0",
+  "description": "A small, type-safe English-like language that compiles to exact cron expressions",
+  "keywords": [
+    "cron",
+    "crontab",
+    "human-readable",
+    "schedule",
+    "type-safe"
+  ],
+  "homepage": "https://github.com/adelrodriguez/cronspeak#readme",
+  "bugs": {
+    "url": "https://github.com/adelrodriguez/cronspeak/issues"
+  },
+  "license": "MIT",
+  "author": "Adel Rodríguez",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelrodriguez/cronspeak.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "analyze": "adamantite analyze",
+    "build": "tsdown",
+    "build:debug": "tsdown --no-minify --sourcemap",
+    "build:verify": "pnpm run build && node scripts/verify-build.ts",
+    "bump:deps": "pnpm update --interactive",
+    "check": "adamantite check",
+    "dev": "tsdown --no-minify --sourcemap --watch",
+    "fix": "adamantite fix",
+    "release": "changeset publish",
+    "test": "vitest run",
+    "test:compat": "pnpm run build && node scripts/compat-smoke.mjs dist",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "version": "changeset version && pnpm run fix"
+  },
+  "devDependencies": {
+    "@changesets/cli": "3.0.1",
+    "@types/node": "24.13.3",
+    "@vitest/coverage-v8": "4.1.11",
+    "adamantite": "0.43.0",
+    "fast-check": "4.9.0",
+    "knip": "6.39.0",
+    "oxfmt": "0.71.0",
+    "oxlint": "1.86.0",
+    "oxlint-tsgolint": "7.0.2003",
+    "tsdown": "0.22.14",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@12.9.1"
+}
