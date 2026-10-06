@@ -185,8 +185,8 @@ importers:
         specifier: 4.9.0
         version: 4.9.0
       humanspan:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.3.0
+        version: 0.3.0
       knip:
         specifier: 6.39.0
         version: 6.39.0
@@ -1564,9 +1564,9 @@ packages:
     resolution: {integrity: sha512-Z+8unD6em/MJwyrkWQ2M3wygRGI1+MztbutiNwk1DCuEPXOZRWGjtcMPZYP1exY9iNZMhd7ZOSMQSo9WYtiQRw==}
     hasBin: true
 
-  humanspan@0.2.0:
-    resolution: {integrity: sha512-QS1z1G+XIyjkOGbWjRgnhUd8tMEF59UtHg4zR8BCDZkUEp1JLpTpZkOzLJSXOruVjO5poLt4z4X8Mx1w+dLOTw==}
-    engines: {node: '>=24'}
+  humanspan@0.3.0:
+    resolution: {integrity: sha512-h63eDEYkf6WFkQF+7fAvPPfsxzJ0MbJALHNLj4OQb09VfoS6HLO0Pm/uEv76Ni2i8KYgyyfGWAjOUJI4XR9EyQ==}
+    engines: {node: '>=20.0.0'}
 
   import-meta-resolve@4.2.0:
     resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
@@ -2941,7 +2941,7 @@ snapshots:
 
   human-id@4.2.2: {}
 
-  humanspan@0.2.0: {}
+  humanspan@0.3.0: {}
 
   import-meta-resolve@4.2.0: {}
 
