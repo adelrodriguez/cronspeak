@@ -1,6 +1,6 @@
 {
   "name": "plaincron",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A small, type-safe English-like language that compiles to exact cron expressions",
   "keywords": [
     "cron",
