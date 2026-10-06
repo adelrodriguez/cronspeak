@@ -1,2 +1,4 @@
 allowBuilds:
   msgpackr-extract: false
+minimumReleaseAgeExclude:
+  - humanspan@0.3.0

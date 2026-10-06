@@ -178,9 +178,15 @@ importers:
       adamantite:
         specifier: 0.43.0
         version: 0.43.0(redis@6.3.0)(typescript@7.0.2)
+      croner:
+        specifier: 10.0.1
+        version: 10.0.1
       fast-check:
         specifier: 4.9.0
         version: 4.9.0
+      humanspan:
+        specifier: 0.3.0
+        version: 0.3.0
       knip:
         specifier: 6.39.0
         version: 6.39.0
@@ -1465,6 +1471,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  croner@10.0.1:
+    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+    engines: {node: '>=18.0'}
+
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
 
@@ -1553,6 +1563,10 @@ packages:
   human-id@4.2.2:
     resolution: {integrity: sha512-Z+8unD6em/MJwyrkWQ2M3wygRGI1+MztbutiNwk1DCuEPXOZRWGjtcMPZYP1exY9iNZMhd7ZOSMQSo9WYtiQRw==}
     hasBin: true
+
+  humanspan@0.3.0:
+    resolution: {integrity: sha512-h63eDEYkf6WFkQF+7fAvPPfsxzJ0MbJALHNLj4OQb09VfoS6HLO0Pm/uEv76Ni2i8KYgyyfGWAjOUJI4XR9EyQ==}
+    engines: {node: '>=20.0.0'}
 
   import-meta-resolve@4.2.0:
     resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
@@ -2859,6 +2873,8 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
+  croner@10.0.1: {}
+
   defu@6.1.7: {}
 
   detect-libc@2.1.2: {}
@@ -2924,6 +2940,8 @@ snapshots:
   html-escaper@2.0.2: {}
 
   human-id@4.2.2: {}
+
+  humanspan@0.3.0: {}
 
   import-meta-resolve@4.2.0: {}
 

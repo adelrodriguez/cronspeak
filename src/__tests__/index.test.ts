@@ -1,28 +1,24 @@
-import fc from "fast-check"
 import { describe, expect, it } from "vitest"
-import { InvalidCronPhraseError } from "../index"
+import * as cronspeak from "../index"
 
-describe("InvalidCronPhraseError", () => {
-  it("should be an Error with its own name", () => {
-    const error = new InvalidCronPhraseError("every 7 minutes", "7 does not divide 60")
-
-    expect(error).toBeInstanceOf(Error)
-    expect(error.name).toBe("InvalidCronPhraseError")
+describe("public entry", () => {
+  it("should export the public functions and the error", () => {
+    expect(Object.keys(cronspeak).toSorted()).toEqual([
+      "InvalidCronPhraseError",
+      "cron",
+      "isCronPhrase",
+      "isValidCronPhrase",
+      "parse",
+      "safeParse",
+    ])
   })
 
-  it("should include the reason and the quoted input in the message", () => {
-    const error = new InvalidCronPhraseError("every 7 minutes", "7 does not divide 60")
-
-    expect(error.message).toBe(
-      'Invalid cron phrase: 7 does not divide 60. Received: "every 7 minutes"'
+  it("should convert a phrase end to end", () => {
+    expect(cronspeak.cron("every 15 minutes between 9:00 and 17:00 on weekdays")).toBe(
+      "*/15 9-16 * * 1-5"
     )
-  })
-
-  it("should store any input value without a change", () => {
-    fc.assert(
-      fc.property(fc.anything(), (value) => {
-        expect(new InvalidCronPhraseError(value, "reason").value).toBe(value)
-      })
-    )
+    expect(cronspeak.parse("Every Mon, Wed and Fri at 9:30 PM")).toBe("30 21 * * 1,3,5")
+    expect(cronspeak.safeParse("every 7 minutes")).toBeNull()
+    expect(() => cronspeak.parse("every 90 minutes")).toThrow(cronspeak.InvalidCronPhraseError)
   })
 })

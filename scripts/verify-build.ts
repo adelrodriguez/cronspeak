@@ -39,20 +39,35 @@ try {
     join(temporaryDirectory, "runtime.mjs"),
     `import assert from "node:assert/strict"
 
-import { InvalidCronPhraseError } from "cronspeak"
+import { cron, InvalidCronPhraseError, isCronPhrase, parse, safeParse } from "cronspeak"
 
-assert.equal(new InvalidCronPhraseError("hello", "reason").value, "hello")
+assert.equal(cron("every 15 minutes between 9:00 and 17:00 on weekdays"), "*/15 9-16 * * 1-5")
+assert.equal(parse("Every Mon At 9:30 AM"), "30 9 * * 1")
+assert.equal(safeParse("every 7 minutes"), null)
+assert.equal(isCronPhrase("every monday and friday at 12:00"), true)
+assert.throws(() => parse("every 90 minutes"), InvalidCronPhraseError)
 `
   )
   run(process.execPath, ["runtime.mjs"], temporaryDirectory)
 
   writeFileSync(
     join(temporaryDirectory, "consumer.ts"),
-    `import { InvalidCronPhraseError } from "cronspeak"
+    `import { cron, isCronPhrase, parse, type CronPhrase, type Weekday } from "cronspeak"
 
-const value: unknown = new InvalidCronPhraseError("hello", "reason").value
+const phrase: CronPhrase = "every weekday at 17:30"
+const day: Weekday = "monday"
+const result: string = cron("every 15 minutes")
+declare const input: string
 
-void value
+// @ts-expect-error -- 7 does not divide 60.
+cron("every 7 minutes")
+
+// @ts-expect-error -- a plain string must be narrowed with isCronPhrase first.
+cron(input)
+
+if (isCronPhrase(input)) cron(input)
+
+void [phrase, day, result, parse(input)]
 `
   )
   writeFileSync(

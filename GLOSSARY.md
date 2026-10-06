@@ -60,6 +60,26 @@ _Avoid_: Range, period
 The days of the week that a clause selects, such as `monday and friday` or `weekdays`.
 _Avoid_: Day list, days
 
+**Day name**:
+One of the seven days, `monday` to `sunday`. The `Weekday` type is the set of day names.
+_Avoid_: Weekday (for one day)
+
+**Day group**:
+A word that selects a fixed day set: `weekday` (Monday to Friday) or `weekend` (Saturday and Sunday).
+_Avoid_: Day range, business days
+
+**Shortcut**:
+A one-word cron phrase: `hourly`, `daily`, `weekly`, or `monthly`.
+_Avoid_: Macro, alias
+
+**Ordinal**:
+A day of the month in a cron phrase, from `1st` to `28th`.
+_Avoid_: Date, day number
+
+**Normalizer**:
+The part of Cronspeak that does normalization.
+_Avoid_: Sanitizer, cleaner
+
 **Dialect**:
 A cron format and the set of schedules that it can express, such as standard 5-field cron.
 _Avoid_: Flavor, variant
