@@ -13,7 +13,7 @@ function describe(value: unknown): string {
  * Error thrown by `cron` and `parse` when the input is not a valid cron phrase.
  *
  * @example
- *   import { parse, InvalidCronPhraseError } from "cronspeak"
+ *   import { parse, InvalidCronPhraseError } from "plaincron"
  *
  *   try {
  *     parse(userInput)

@@ -5,7 +5,7 @@ import { join } from "node:path"
 import packageJson from "../package.json" with { type: "json" }
 
 const packageRoot = join(import.meta.dirname, "..")
-const temporaryDirectory = mkdtempSync(join(tmpdir(), "cronspeak-build-"))
+const temporaryDirectory = mkdtempSync(join(tmpdir(), "plaincron-build-"))
 const exportPaths = [packageJson.module, packageJson.types, packageJson.exports["."].import]
 
 function run(command: string, arguments_: string[], cwd: string) {
@@ -31,7 +31,7 @@ try {
   const tarballPath = join(temporaryDirectory, tarball)
   writeFileSync(
     join(temporaryDirectory, "package.json"),
-    `${JSON.stringify({ name: "cronspeak-build-verification", private: true, type: "module" }, null, 2)}\n`
+    `${JSON.stringify({ name: "plaincron-build-verification", private: true, type: "module" }, null, 2)}\n`
   )
   run("npm", ["install", "--ignore-scripts", "--no-package-lock", tarballPath], temporaryDirectory)
 
@@ -39,7 +39,7 @@ try {
     join(temporaryDirectory, "runtime.mjs"),
     `import assert from "node:assert/strict"
 
-import { cron, InvalidCronPhraseError, isCronPhrase, parse, safeParse } from "cronspeak"
+import { cron, InvalidCronPhraseError, isCronPhrase, parse, safeParse } from "plaincron"
 
 assert.equal(cron("every 15 minutes between 9:00 and 17:00 on weekdays"), "*/15 9-16 * * 1-5")
 assert.equal(parse("Every Mon At 9:30 AM"), "30 9 * * 1")
@@ -52,7 +52,7 @@ assert.throws(() => parse("every 90 minutes"), InvalidCronPhraseError)
 
   writeFileSync(
     join(temporaryDirectory, "consumer.ts"),
-    `import { cron, isCronPhrase, parse, type CronPhrase, type Weekday } from "cronspeak"
+    `import { cron, isCronPhrase, parse, type CronPhrase, type Weekday } from "plaincron"
 
 const phrase: CronPhrase = "every weekday at 17:30"
 const day: Weekday = "monday"
@@ -94,7 +94,7 @@ void [phrase, day, result, parse(input)]
     temporaryDirectory
   )
 
-  console.info("Verified the packed Cronspeak runtime and declarations.")
+  console.info("Verified the packed Plaincron runtime and declarations.")
 } finally {
   rmSync(temporaryDirectory, { force: true, recursive: true })
 }

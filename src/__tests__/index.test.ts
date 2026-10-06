@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest"
-import * as cronspeak from "../index"
+import * as plaincron from "../index"
 
 describe("public entry", () => {
   it("should export the public functions and the error", () => {
-    expect(Object.keys(cronspeak).toSorted()).toEqual([
+    expect(Object.keys(plaincron).toSorted()).toEqual([
       "InvalidCronPhraseError",
       "cron",
       "isCronPhrase",
@@ -14,11 +14,11 @@ describe("public entry", () => {
   })
 
   it("should convert a phrase end to end", () => {
-    expect(cronspeak.cron("every 15 minutes between 9:00 and 17:00 on weekdays")).toBe(
+    expect(plaincron.cron("every 15 minutes between 9:00 and 17:00 on weekdays")).toBe(
       "*/15 9-16 * * 1-5"
     )
-    expect(cronspeak.parse("Every Mon, Wed and Fri at 9:30 PM")).toBe("30 21 * * 1,3,5")
-    expect(cronspeak.safeParse("every 7 minutes")).toBeNull()
-    expect(() => cronspeak.parse("every 90 minutes")).toThrow(cronspeak.InvalidCronPhraseError)
+    expect(plaincron.parse("Every Mon, Wed and Fri at 9:30 PM")).toBe("30 21 * * 1,3,5")
+    expect(plaincron.safeParse("every 7 minutes")).toBeNull()
+    expect(() => plaincron.parse("every 90 minutes")).toThrow(plaincron.InvalidCronPhraseError)
   })
 })

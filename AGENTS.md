@@ -9,7 +9,7 @@ ubiquitous language in these files.
 
 ### Issue tracker
 
-Issues and PRDs are tracked as GitHub issues at `adelrodriguez/cronspeak`. See
+Issues and PRDs are tracked as GitHub issues at `adelrodriguez/plaincron`. See
 `docs/agents/issue-tracker.md`.
 
 ### Triage labels

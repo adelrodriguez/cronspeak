@@ -48,23 +48,23 @@ delete Set.prototype.union
 /**
  * @type {typeof import("../src/index")}
  */
-const cronspeak = await import(pathToFileURL(entry).href)
+const plaincron = await import(pathToFileURL(entry).href)
 
-check(cronspeak.cron("every 15 minutes") === "*/15 * * * *", "cron converts a phrase")
+check(plaincron.cron("every 15 minutes") === "*/15 * * * *", "cron converts a phrase")
 check(
-  cronspeak.parse("Every Mon, Wed and Fri at 9:30 PM") === "30 21 * * 1,3,5",
+  plaincron.parse("Every Mon, Wed and Fri at 9:30 PM") === "30 21 * * 1,3,5",
   "parse accepts the lenient form"
 )
-check(cronspeak.safeParse("every 7 minutes") === null, "safeParse returns null")
-check(cronspeak.isCronPhrase("every weekday at 17:30"), "isCronPhrase accepts the strict form")
-check(cronspeak.isValidCronPhrase("EVERY 2 HRS"), "isValidCronPhrase accepts the lenient form")
+check(plaincron.safeParse("every 7 minutes") === null, "safeParse returns null")
+check(plaincron.isCronPhrase("every weekday at 17:30"), "isCronPhrase accepts the strict form")
+check(plaincron.isValidCronPhrase("EVERY 2 HRS"), "isValidCronPhrase accepts the lenient form")
 
 try {
-  cronspeak.parse("every 90 minutes")
+  plaincron.parse("every 90 minutes")
   check(false, "parse throws for an invalid phrase")
 } catch (error) {
   check(
-    error instanceof cronspeak.InvalidCronPhraseError && error.value === "every 90 minutes",
+    error instanceof plaincron.InvalidCronPhraseError && error.value === "every 90 minutes",
     "InvalidCronPhraseError stores the input"
   )
 }

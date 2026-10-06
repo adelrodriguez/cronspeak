@@ -1,5 +1,5 @@
 {
-  "name": "cronspeak",
+  "name": "plaincron",
   "version": "0.0.0",
   "description": "A small, type-safe English-like language that compiles to exact cron expressions",
   "keywords": [
@@ -9,15 +9,15 @@
     "schedule",
     "type-safe"
   ],
-  "homepage": "https://github.com/adelrodriguez/cronspeak#readme",
+  "homepage": "https://github.com/adelrodriguez/plaincron#readme",
   "bugs": {
-    "url": "https://github.com/adelrodriguez/cronspeak/issues"
+    "url": "https://github.com/adelrodriguez/plaincron/issues"
   },
   "license": "MIT",
   "author": "Adel Rodríguez",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adelrodriguez/cronspeak.git"
+    "url": "git+https://github.com/adelrodriguez/plaincron.git"
   },
   "files": [
     "dist"
