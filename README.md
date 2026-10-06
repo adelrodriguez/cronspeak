@@ -1,19 +1,19 @@
 <div align="center">
-  <h1 align="center">🗓️ <code>cronspeak</code></h1>
+  <h1 align="center">🗓️ <code>plaincron</code></h1>
 
   <p align="center">
     <strong>A small, type-safe English-like language that compiles to exact cron expressions</strong>
   </p>
 </div>
 
-Cronspeak converts cron phrases such as `"every 15 minutes"` to cron expressions such as `"*/15 * * * *"`. It is not a free-text parser. It accepts a closed set of sentence shapes, and each valid cron phrase maps to exactly one cron expression.
+Plaincron converts cron phrases such as `"every 15 minutes"` to cron expressions such as `"*/15 * * * *"`. It is not a free-text parser. It accepts a closed set of sentence shapes, and each valid cron phrase maps to exactly one cron expression.
 
 - **Exact or throw.** The language contains only phrases that one standard cron expression can express exactly. `"every 7 minutes"` is an error, because `*/7` runs at :56 and then at :00.
 - **Type-safe.** An invalid string literal is a type error, with a reason that names the failed part.
 - **Small.** No runtime dependencies, no side effects, ESM only, Node 20 and later.
 
 ```ts
-import { cron } from "cronspeak"
+import { cron } from "plaincron"
 
 cron("every 15 minutes") // "*/15 * * * *"
 cron("every weekday at 17:30") // "30 17 * * 1-5"
@@ -26,7 +26,7 @@ cron("every 7 minutes")
 ## Install
 
 ```sh
-npm install cronspeak
+npm install plaincron
 ```
 
 ## The language
@@ -122,9 +122,9 @@ The unit aliases mean the same units as in [Humanspan](https://github.com/adelro
 
 ## API
 
-Cronspeak has the same API shape as Humanspan:
+Plaincron has the same API shape as Humanspan:
 
-| Use                                            | Cronspeak           | Humanspan               |
+| Use                                            | Plaincron           | Humanspan               |
 | ---------------------------------------------- | ------------------- | ----------------------- |
 | A typed phrase in your code                    | `cron(phrase)`      | `ms(value)`             |
 | A `string` from a config file or a form        | `parse(value)`      | `parse(value)`          |
@@ -220,7 +220,7 @@ try {
 The `CronPhrase` type checks the sentence shapes, intervals, ordinals, and the day set after `every`. It does not check times, or the clauses after `on` and `between`, because these make the union too large. `cron` and `ValidateCronPhrase` check the full phrase of a string literal. Use `ValidateCronPhrase` to write your own typed functions:
 
 ```ts
-import type { ValidateCronPhrase } from "cronspeak"
+import type { ValidateCronPhrase } from "plaincron"
 
 function schedule<T extends string>(phrase: ValidateCronPhrase<T>, job: () => void) {
   // ...

@@ -70,7 +70,7 @@ lines.push(
   `export const all: CronPhrase[] = [${Array.from({ length: PHRASE_COUNT }, (_, index) => `phrase${index}`).join(", ")}]`
 )
 
-const temporaryDirectory = mkdtempSync(join(tmpdir(), "cronspeak-typecheck-"))
+const temporaryDirectory = mkdtempSync(join(tmpdir(), "plaincron-typecheck-"))
 
 try {
   writeFileSync(join(temporaryDirectory, "phrases.ts"), `${lines.join("\n")}\n`)
