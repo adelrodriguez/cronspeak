@@ -1,7 +1,98 @@
 import { Cron } from "croner"
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
-import { parse, safeParse } from "../index"
+import type { GrammarRow } from "../../grammar/__tests__/grammar.table"
+import { GRAMMAR } from "../../grammar/__tests__/grammar.table"
+import { InvalidCronPhraseError } from "../errors"
+import { parse, safeParse } from "../parse"
+
+// The table phrases are literal types. The tests use them as `string`, the same as input from a
+// config file.
+const ROWS: readonly GrammarRow[] = GRAMMAR
+
+describe("parse", () => {
+  for (const row of ROWS) {
+    if (row.lenient) {
+      it(`should convert ${JSON.stringify(row.phrase)} to "${row.cron}"`, () => {
+        expect(parse(row.phrase)).toBe(row.cron)
+      })
+    } else {
+      it(`should reject ${JSON.stringify(row.phrase)} with "${row.error}"`, () => {
+        expect(() => parse(row.phrase)).toThrow(InvalidCronPhraseError)
+        expect(() => parse(row.phrase)).toThrow(row.error)
+      })
+    }
+  }
+
+  it("should store the input and the reason in the error", () => {
+    let caught: unknown
+
+    try {
+      parse("every 7 minutes")
+    } catch (error) {
+      caught = error
+    }
+
+    expect(caught).toBeInstanceOf(InvalidCronPhraseError)
+    expect((caught as InvalidCronPhraseError).value).toBe("every 7 minutes")
+    expect((caught as InvalidCronPhraseError).message).toBe(
+      'Invalid cron phrase: 7 does not divide 60. Use 2, 3, 4, 5, 6, 10, 12, 15, 20, or 30. Received: "every 7 minutes"'
+    )
+  })
+
+  it("should reject a value that is not a string", () => {
+    for (const value of [undefined, null, 15, {}, ["every minute"]]) {
+      // The values are not strings, the same as untyped input from JavaScript.
+      expect(() => parse(value as string)).toThrow("the value is not a string")
+    }
+  })
+
+  it("should throw only InvalidCronPhraseError", () => {
+    fc.assert(
+      fc.property(fc.string(), (value) => {
+        try {
+          parse(value)
+        } catch (error) {
+          expect(error).toBeInstanceOf(InvalidCronPhraseError)
+        }
+      })
+    )
+  })
+})
+
+describe("safeParse", () => {
+  for (const row of ROWS) {
+    it(`should return ${row.lenient ? `"${row.cron}"` : "null"} for ${JSON.stringify(row.phrase)}`, () => {
+      expect(safeParse(row.phrase)).toBe(row.lenient ? row.cron : null)
+    })
+  }
+
+  it("should never throw", () => {
+    fc.assert(
+      fc.property(fc.oneof(fc.string(), fc.anything()), (value) => {
+        expect(() => safeParse(value as string)).not.toThrow()
+      })
+    )
+  })
+
+  it("should agree with parse", () => {
+    fc.assert(
+      fc.property(
+        fc.oneof(fc.string(), fc.constantFrom(...ROWS.map((row) => row.phrase))),
+        (value) => {
+          let parsed: string | null
+          try {
+            parsed = parse(value)
+          } catch {
+            parsed = null
+          }
+
+          expect(safeParse(value)).toBe(parsed)
+        }
+      )
+    )
+  })
+})
 
 // These tests prove the "exact or throw" rule. A generated phrase gives a cron expression. Croner
 // computes its run times, and the test compares them with the run times that the phrase describes.
@@ -173,7 +264,7 @@ function cronRuns(expression: string, start: number, count: number): number[] {
   return cron.nextRuns(count, new Date(start - 1000)).map((date) => date.getTime())
 }
 
-describe("exactness", () => {
+describe("parse exactness", () => {
   it("should run at exactly the times that the phrase describes", () => {
     fc.assert(
       fc.property(meaningArb, startArb, (meaning, start) => {

@@ -1,7 +1,7 @@
 import type { GrammarResult } from "../grammar/grammar"
-import { toStandardCron } from "../cron/serialize"
 import { parseStrict } from "../grammar/grammar"
 import { normalize } from "../normalize/normalize"
+import { toStandardCron } from "../serialize/serialize"
 import { InvalidCronPhraseError } from "./errors"
 
 /**

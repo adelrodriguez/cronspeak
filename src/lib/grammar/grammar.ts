@@ -152,41 +152,24 @@ function formatDayList(names: readonly string[]): string {
   return `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`
 }
 
+// The checks follow the same steps as the type-level validator, so that the reasons agree: first
+// the day names, then duplicates, then the calendar order, and last the list format.
 function parseDayList(words: readonly string[]): number[] {
-  const indexes: number[] = []
-  const separators: string[] = []
-  let position = 0
+  const names = words
+    .filter((word) => word !== "and")
+    .map((word) => (word.endsWith(",") ? word.slice(0, -1) : word))
 
-  while (position < words.length) {
-    const word = words[position] ?? ""
-    const hasComma = word.endsWith(",")
-    const name = hasComma ? word.slice(0, -1) : word
-    const index = DAYS.findIndex((day) => day.name === name)
-
+  for (const name of names) {
     if (DAY_GROUPS.some((group) => group.singular === name || group.plural === name)) {
       fail(`"${name}" cannot be part of a list of days`)
     }
-    if (index === -1) fail(`"${name}" is not a day. ${DAY_SET_HINT}`)
-
-    indexes.push(index)
-    position += 1
-
-    if (hasComma) {
-      separators.push(",")
-      if (position >= words.length) fail(`expected a day after "${word}"`)
-    } else if (words[position] === "and") {
-      separators.push("and")
-      position += 1
-      if (position >= words.length) fail(`expected a day after "and"`)
-    } else if (position < words.length) {
-      fail(`expected "," or "and" after "${name}"`)
-    }
+    if (!DAYS.some((day) => day.name === name)) fail(`"${name}" is not a day. ${DAY_SET_HINT}`)
   }
 
-  const names = indexes.map((index) => DAYS[index]?.name ?? "")
   const duplicate = names.find((name, index) => names.indexOf(name) !== index)
   if (duplicate) fail(`"${duplicate}" is in the list more than one time`)
 
+  const indexes = names.map((name) => DAYS.findIndex((day) => day.name === name))
   const sorted = indexes.toSorted((a, b) => a - b)
   if (sorted.some((index, position) => index !== indexes[position])) {
     fail(
@@ -194,11 +177,7 @@ function parseDayList(words: readonly string[]): number[] {
     )
   }
 
-  const expectedSeparators =
-    indexes.length < 2 ? [] : [...Array.from({ length: indexes.length - 2 }, () => ","), "and"]
-  if (separators.join(" ") !== expectedSeparators.join(" ")) {
-    fail(`write the list as "${formatDayList(names)}"`)
-  }
+  if (words.join(" ") !== formatDayList(names)) fail(`write the list as "${formatDayList(names)}"`)
 
   return indexes.map((index) => DAYS[index]?.cron ?? 0)
 }

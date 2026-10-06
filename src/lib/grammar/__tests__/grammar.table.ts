@@ -31,7 +31,8 @@ export type GrammarRow =
     }
 
 /**
- * The grammar table: the source of truth for the runtime tests and the type-level tests.
+ * The grammar table: the source of truth for the grammar tests, the type-level tests, and the
+ * `parse`, `cron`, and guard tests.
  */
 export const GRAMMAR = [
   // ---- Minute interval ----
