@@ -10,13 +10,13 @@ function describe(value: unknown): string {
 }
 
 /**
- * Error thrown by `toCron` when the input is not a valid cron phrase.
+ * Error thrown by `cron` and `parse` when the input is not a valid cron phrase.
  *
  * @example
- *   import { toCron, InvalidCronPhraseError } from "cronspeak"
+ *   import { parse, InvalidCronPhraseError } from "cronspeak"
  *
  *   try {
- *     toCron(userInput)
+ *     parse(userInput)
  *   } catch (error) {
  *     if (error instanceof InvalidCronPhraseError) {
  *       console.error(error.message, error.value)

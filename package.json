@@ -46,6 +46,7 @@
     "test": "vitest run",
     "test:compat": "pnpm run build && node scripts/compat-smoke.mjs dist",
     "test:coverage": "vitest run --coverage",
+    "test:types-perf": "node scripts/typecheck-perf.ts",
     "test:watch": "vitest",
     "version": "changeset version && pnpm run fix"
   },
@@ -54,7 +55,9 @@
     "@types/node": "24.13.3",
     "@vitest/coverage-v8": "4.1.11",
     "adamantite": "0.43.0",
+    "croner": "10.0.1",
     "fast-check": "4.9.0",
+    "humanspan": "0.2.0",
     "knip": "6.39.0",
     "oxfmt": "0.71.0",
     "oxlint": "1.86.0",

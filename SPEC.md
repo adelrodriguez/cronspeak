@@ -17,7 +17,7 @@ Cronspeak is a zero-dependency TypeScript package. It is a sibling of Humanspan.
 - Cronspeak is not a free-text parser. The language has a fixed set of **sentence shapes** with a fixed clause order.
 - Each valid phrase has exactly one meaning and maps to exactly one cron. The language contains only phrases that cron can express exactly ("exact or throw").
 - A `CronPhrase` type checks string literals at compile time. Invalid phrases, and phrases with no exact cron (for example `"every 7 minutes"`), are type errors with readable messages.
-- At runtime, `toCron` accepts the **strict form** and small, safe spelling variations (the **lenient form**). The lenient form makes phrases easier to type. It never adds new words or new sentence shapes.
+- At runtime, `parse` accepts the **strict form** and small, safe spelling variations (the **lenient form**). The lenient form makes phrases easier to type. It never adds new words or new sentence shapes.
 
 Examples:
 
@@ -42,10 +42,10 @@ Examples:
 4. As a package consumer, I want a type error for `"every 7 minutes"`, so that I never ship a schedule with uneven gaps.
 5. As a package consumer, I want type errors that explain the problem in words (for example "7 does not divide 60. Use 5, 6, 10, 12, 15, 20, or 30."), so that I can fix the phrase without reading the docs.
 6. As a package consumer, I want my editor to autocomplete valid phrases where possible, so that I can discover the language while I type.
-7. As a package consumer, I want `toCron` to throw a dedicated error class for invalid input, so that I can handle phrase errors separately from other errors.
+7. As a package consumer, I want `cron` and `parse` to throw a dedicated error class for invalid input, so that I can handle phrase errors separately from other errors.
 8. As a package consumer, I want the error to store the invalid input in a `value` property, so that I can log or show it.
 9. As a package consumer, I want the error message to say which part of the phrase failed, so that I can correct user input.
-10. As a package consumer, I want a `safeToCron` function that returns `null` for invalid input, so that I can validate values without `try`/`catch`.
+10. As a package consumer, I want a `safeParse` function that returns `null` for invalid input, so that I can validate values without `try`/`catch`.
 11. As a package consumer, I want an `isCronPhrase` guard, so that I can narrow a `string` from a config file or a form to the `CronPhrase` type.
 12. As a package consumer, I want a guard for the lenient form, so that I can validate user input that uses safe variations.
 13. As a package consumer, I want to write minute intervals that divide 60 (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30), so that I can run frequent jobs.
@@ -64,8 +64,8 @@ Examples:
 26. As a package consumer, I want `noon` and `midnight` as times, so that common times are easy to read.
 27. As a package consumer, I want `at 9` without minutes and without am/pm to be invalid, so that the language never guesses between 09:00 and 21:00.
 28. As a package consumer, I want ambiguous words such as `biweekly` and `twice a day` to be invalid, so that every valid phrase has one meaning.
-29. As a package consumer, I want `toCron` to accept uppercase and Capitalized words at runtime, so that phrases from config files do not fail for case.
-30. As a package consumer, I want `toCron` to accept extra whitespace at runtime, so that formatting differences do not cause errors.
+29. As a package consumer, I want `parse` to accept uppercase and Capitalized words at runtime, so that phrases from config files do not fail for case.
+30. As a package consumer, I want `parse` to accept extra whitespace at runtime, so that formatting differences do not cause errors.
 31. As a package consumer, I want unit and day aliases (`min`, `mins`, `hr`, `mon`, `tue`) at runtime, so that short phrases are accepted.
 32. As a package consumer, I want unit aliases to mean the same as in Humanspan (`m` = minutes, `mo` = months), so that the two libraries never disagree.
 33. As a package consumer, I want the lenient form to never accept a new word or a new sentence shape, so that the language stays small and exact.
@@ -127,10 +127,13 @@ Examples:
 
 ### Public interface
 
-- `toCron(phrase)` returns a standard 5-field cron string. It throws `InvalidCronPhraseError` for invalid input.
-- `safeToCron(phrase)` returns the cron string or `null`. It never throws.
+The API has the same shape as Humanspan (see ADR 0006).
+
+- `cron(phrase)` takes a `CronPhrase` and returns a standard 5-field cron string, the same as Humanspan's `ms(value)` takes a `TimeExpression`. A plain `string` is a type error.
+- `parse(value)` takes any `string` in the strict or lenient form and returns the cron string. It throws `InvalidCronPhraseError` for invalid input.
+- `safeParse(value)` returns the cron string or `null`. It never throws.
 - `isCronPhrase(value)` is a type guard for the strict form. It never throws.
-- `isValidCronPhrase(value)` returns `true` for any value that `toCron` accepts (strict or lenient form). It never throws.
+- `isValidCronPhrase(value)` returns `true` for any value that `parse` accepts (strict or lenient form). It never throws.
 - `InvalidCronPhraseError` stores the input in `value`. The message names the part of the phrase that failed.
 - `CronPhrase` is the type of the strict form. Slot types (for example the day name and interval types) are also exported.
 - Return type: `string` in v1. A literal result type (for example `"*/15 * * * *"` for `"every 15 minutes"`) is a stretch goal. Add it only if type-check performance stays acceptable.
@@ -140,7 +143,7 @@ Examples:
 - Small closed slots (intervals, shortcuts, ordinals, day names, day sets) are union types. The 127 day sets in calendar order can come from a generation script or a recursive type. Choose the method that type-checks faster.
 - Large regular slots (times) are checked by a validator generic: the public functions take a string literal type parameter, and a conditional type checks it. This avoids a large union for 1440 times in two formats.
 - For invalid literals, the validator returns a string literal type that explains the error, so that the editor shows a readable message instead of a large union.
-- When the input type is `string` (not a literal), the type accepts it. The runtime check and the guards protect these values.
+- When the input type is `string` (not a literal), `cron` rejects it. Use `parse`, or narrow the value with `isCronPhrase`.
 
 ### Internal modules
 
@@ -163,10 +166,10 @@ These modules are internal. Tests do not call them directly.
 - **One test seam: the public package entry.** Tests import only the public exports. They do not test the normalizer, grammar, schedule model, or serializer directly. This lets the internal design change without changes to the tests.
 - **A good test checks external behavior.** It gives a phrase and checks the cron, the error, the `null` result, the guard result, or the type. It does not check how the package got the result.
 - **One grammar table is the source of truth.** Each row has a phrase, whether the strict type accepts it, whether the runtime accepts it, and the expected cron (or the expected error part). Both test kinds read this table:
-  - Runtime tests check `toCron`, `safeToCron`, `isCronPhrase`, and `isValidCronPhrase` for each row.
+  - Runtime tests check `cron`, `parse`, `safeParse`, `isCronPhrase`, and `isValidCronPhrase` for each row.
   - Type-level tests (vitest `expectTypeOf` and `@ts-expect-error`) check that the type accepts and rejects the same strict rows.
 - **Exactness property tests.** Generate valid phrases with fast-check. Compute the next run times of the result with `croner` (dev dependency only), and check that the run times match what the phrase says (gaps, window limits, days). This test proves the "exact or throw" rule.
-- **Guard agreement property tests.** For arbitrary strings, `isValidCronPhrase(value)` equals `safeToCron(value) !== null`, and `isCronPhrase(value)` implies `isValidCronPhrase(value)`. Prior art: Humanspan's guard property tests ("should agree with safeParse for arbitrary strings").
+- **Guard agreement property tests.** For arbitrary strings, `isValidCronPhrase(value)` equals `safeParse(value) !== null`, and `isCronPhrase(value)` implies `isValidCronPhrase(value)`. Prior art: Humanspan's guard property tests ("should agree with safeParse for arbitrary strings").
 - **Normalization property tests.** For each strict phrase, random case and whitespace changes give the same cron.
 - **Alias agreement test.** The unit alias table agrees with Humanspan's unit table (Humanspan as a dev dependency).
 - **Type-check performance check.** Measure type-check time with extended diagnostics on a file with many phrases. Fail CI if it goes above an agreed limit.
